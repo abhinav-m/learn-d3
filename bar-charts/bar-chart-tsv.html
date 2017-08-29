@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<meta charset='utf-8'>
+<style>
+    .chart rect {
+        fill: steelblue;
+    }
+    
+    .chart text {
+        fill: white;
+        font: 10px sans-serif;
+        text-anchor: end;
+    }
+</style>
+<svg class='chart'></svg>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js" charset="utf-8"></script>
+<script>
+    var width = 420,
+        barHeight = 20;
+
+    var x = d3.scaleLinear()
+        .range([0, width]);
+
+    var chart = d3.select(".chart")
+        .attr("width", width);
+
+    //TSV function is an asynchronous method to access values
+    //from tab seperated value files, typeChange is a callback function which is used to 
+    //convert values read from the TSV file , after we map each value in TSV and cooerce it to number
+    //we create the domain of our linear scale defined above, by passing 0, and 
+    //d3.max(data) <- this calculates max of the data we have and maps each value to a number using function passed as second argument.
+    //(same as array.map)
+
+    //After reading the TSV file, converts the data into an object with properties as the headers of the TSV file.
+    //eg, in this case it will be data.value and data.name
+    d3.tsv('data.tsv', typeChange, (err, data) => {
+        //Since method is asynchronous, access values inside callback (err,data) above.
+        x.domain([0, d3.max(data, d => d.value)])
+
+        chart.attr('height'.barHeight)
+
+
+        var bar = chart.selectAll('g')
+            .data(data)
+            .enter().append('g')
+            .attr('transform', (d, i) => 'translate(0,' + barHeight * i + ')')
+
+        bar.append('rect')
+            .attr('width', d => x(d.value))
+            .attr('height', barHeight - 1)
+
+        bar.append('text')
+            .attr('x', d => x(d.value) - 3)
+            .attr('y', barHeight / 2)
+            .attr('dy', '.35em')
+            .text(d => d.value)
+
+
+    })
+
+    //This function converts every 'value' property read from TSV to a number (coorecion)
+    function typeChange(d) {
+        d.value = +d.value;
+        return d;
+    }
+</script>
+
+</html>
