@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<style>
+    .chart rect {
+        fill: steelblue;
+    }
+    
+    .chart text {
+        fill: white;
+        font: 10px sans-serif;
+        text-anchor: middle;
+    }
+    
+    .axis text {
+        font: 10px sans-serif;
+    }
+    
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+    
+    .x.axis path {
+        display: none;
+    }
+</style>
+<html>
+<svg class='chart' /></svg>
+
+</html>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js'></script>
+<script>
+    //Setting height and width of our bar chart.
+
+    var width, height;
+
+    //Conventionally margins are assigned using  a margin object.
+    var margin = {
+            top: 20,
+            right: 30,
+            left: 40,
+            bottom: 30
+        }
+        //Subtract margins from height and width to calculate the SCALES ranges of the chart.
+        // this will also be useful to display the axis at the bottom of the chart
+    width = 800 - margin.left - margin.right;
+    height = 500 - margin.top - margin.bottom
+
+
+
+
+    /* 
+    Since we are mapping letter frequencies, unlike quantititative values that 
+    can be compared numerically ordinal values are compared by rank. Letters are ordinal.
+    A occur before B , C etc Ordinal scales are used to encode ordinal data.
+    In its most explicit form, an ordinal scale is a mapping from a discrete set of data values (such as names) to a corresponding discrete set of display values (such as pixel positions). 
+    Like quantitative scales these sets are called the domain and range, respectively.
+    
+    var x = d3.scale.ordinal()
+    .domain(["A", "B", "C", "D", "E", "F"])
+    .rangeBands([0, width]);  
+     */
+
+
+    var x = d3.scaleOrdinal()
+        .rangeRoundBands([0, width], .1); //rangeRoundBands  generates range values for us  
+    // which are evenly spaced
+
+    //our y linear scale will have range of height -> 0
+    //This is because svg elements have their origin 0 on top left respective to container
+    //Thus, bottom of the y axis would be height in pixels, defined above.
+    var y = d3.scaleLinear()
+        .range([height, 0]);
+
+
+    //Adding a 'g' element to offset the chart's inner elements by left margin and top margin
+    //Any elements subsequently added to chart will thus inherit the margins.
+    var chart = d3.select('.chart')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+
+
+    //Adding axes
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(10, "%");
+
+
+    d3.tsv('letter-frequence.tsv', mapFn, (err, data) => {
+
+        x.domain(data.map(v => v.Letter))
+
+        //Setting domain of the linear scale produced above from 0 to maximum value contained in data
+        //since data is an object, we use mapping function to map it's value numerically
+        y.domain([0, d3.max(data, d => d.Frequency)])
+
+        //This axes object can  be used to render multiple axes by using selection.call
+        //The axis elements are positioned relative to a local origin,
+        //so to transform into the desired position we set the "transform" attribute on a containing g element:
+        chart.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+        //calling the appended g element in svg with object xAxis.
+
+
+        chart.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Frequency");
+
+
+        //Creating groups inside our barchart, and translating them around the x - axis by 
+        //units relating to our desired bar width.
+        var bar = chart.selectAll('g')
+            .data(data)
+            .enter().append('g')
+            .attr('transform', (d, i) => 'translate(' + x(d.Letter) + ',0)')
+
+        //Appending rect svg inside our groups selected above
+        //with their 'y' axis value obtained from the linear scale defined above
+        //Since we have defined the domain's lowest value 0 to max in our data, this will yeild
+        //higher value for lower value of our data
+        bar.append('rect')
+            .attr('y', d => y(d.Frequency))
+            .attr('height', d => height - y(d.Frequency)) // we apply this to obtain the height of the current bar,since lower values of data will give us smaller values, subtracting from height will set these as smaller bars for display.
+            .attr('width', barWidth - 1) //Adding a margin between each bar.
+
+        bar.append('text')
+            .attr('x', x.rangeBand() / 2)
+            .attr('y', d => y(d.Frequency) + 3)
+            .attr('dy', '.75em')
+            .text(d => d.value)
+
+
+    })
+
+    function mapFn(d) {
+        d.Frequency = +d.Frequency
+        return d;
+    }
+</script>
