@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    .bar {
+        fill: steelblue;
+    }
+    
+    .bar:hover {
+        fill: brown;
+    }
+    
+    .axis--x path {
+        display: none;
+    }
+</style>
+<svg width="960" height="500">
+    </svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+    var svg = d3.select('svg'), //Selecting svg and assigning margins.
+        margin = {
+            top: 20,
+            right: 20,
+            bottom: 30,
+            left: 40
+        },
+        width = +svg.attr('width') - margin.left - margin.right, //Subtracting width and height from margins.
+        height = +svg.attr('height') - margin.top - margin.bottom;
+
+    var x = d3.scaleBand().rangeRound([0, width]).padding(0.1), //Sets an ordinal scale which is divided into our width and rounded up to an integer, also depends on length of the data with the inner and outer padding set as 0.1
+        y = d3.scaleLinear().rangeRound([height, 0]); //A scale with range set as height -> 0 thus, as  domain increases output value will decrease.
+
+
+    //Adding a 'g' element to offset the chart's inner elements by left margin and top margin
+    //Any elements subsequently added to chart will thus inherit the margins.
+
+    var g = svg.append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+
+    //Data object for alphabets.
+    var data = [{
+        Letter: "A",
+        Frequency: 0.08167
+    }, {
+        Letter: "B",
+        Frequency: 0.01492
+    }, {
+        Letter: "C",
+        Frequency: 0.02782
+    }, {
+        Letter: "D",
+        Frequency: 0.04253
+    }, {
+        Letter: "E",
+        Frequency: 0.12702
+    }, {
+        Letter: "F",
+        Frequency: 0.02288
+    }, {
+        Letter: "G",
+        Frequency: 0.02015
+    }, {
+        Letter: "H",
+        Frequency: 0.06094
+    }, {
+        Letter: "I",
+        Frequency: 0.06966
+    }, {
+        Letter: "J",
+        Frequency: 0.00153
+    }, {
+        Letter: "K",
+        Frequency: 0.00772
+    }, {
+        Letter: "L",
+        Frequency: 0.04025
+    }, {
+        Letter: "M",
+        Frequency: 0.02406
+    }, {
+        Letter: "N",
+        Frequency: 0.06749
+    }, {
+        Letter: "O",
+        Frequency: 0.07507
+    }, {
+        Letter: "P",
+        Frequency: 0.01929
+    }, {
+        Letter: "Q",
+        Frequency: 0.00095
+    }, {
+        Letter: "R",
+        Frequency: 0.05987
+    }, {
+        Letter: "S",
+        Frequency: 0.06327
+    }, {
+        Letter: "T",
+        Frequency: 0.09056
+    }, {
+        Letter: "U",
+        Frequency: 0.02758
+    }, {
+        Letter: "V",
+        Frequency: 0.00978
+    }, {
+        Letter: "W",
+        Frequency: 0.0236
+    }, {
+        Letter: "X",
+        Frequency: 0.0015
+    }, {
+        Letter: "Y",
+        Frequency: 0.01974
+    }, {
+        Letter: "Z",
+        Frequency: 0.00074
+    }]
+
+
+
+    //First scale's domain mapping ie, 26 letters. (with output range as width above)
+    x.domain(data.map(d => d.Letter))
+        //Second scale's domain mapping ie, 0 to maximum  frequency of each letter. (with output range as height above)
+    y.domain([0, d3.max(data, d => d.Frequency)])
+
+
+    g.append('g') // Appending the x -axis in the 'g' we selected above
+        .attr('class', 'axis axis--x') // Applying class to it.
+        .attr('transform', 'translate(0,' + height + ')') //Translating the axis to the bottom of the chart .
+        .call(d3.axisBottom(x)) // using our scale made above to convert this g to an evenly spaced axis with alphabets.
+
+    g.append('g') //Making the y axis here, similar to above
+        .attr('class', 'axis axis--y')
+        .call(d3.axisLeft(y).ticks(10, '%')) //Makes a left oriented axis with the given scale y and ticks with % appended to them.
+        .append('text') //Append text element to the axis 
+        .attr('transform', 'rotate(-90)') // rotate it 90 degrees (the text element)
+        .attr('y', 6)
+        .attr('dy', '0.71em')
+        .attr('text-anchor', 'end')
+        .text('Frequency') //Add the text Frequency to the element
+
+
+
+    g.selectAll('.bar') //Select bar class inside svg
+        .data(data) // bind it with data
+        .enter().append('rect') // adds rect element for each data point
+        .attr('class', 'bar') // adds the bar chart class
+        .attr('x', d => x(d.Letter)) // Map the x attribute of each element using the Letter in the data point, and our x scale( this will give each bar at continuous interval on the x - axis)
+        .attr('y', d => y(d.Frequency)) // y attribute for each rect would be the output produced with y scale passed our frequency. smaller the value of frequency, greater the y scale. this will make sure when we subtract the total height, our bar chart is aligned perfectly.
+        .attr('width', x.bandwidth()) //width of each bar is the bandwidth of our scale produced above.
+        .attr('height', d => height - y(d.Frequency)) //set height by subtracting from y value produced above.
+</script>
