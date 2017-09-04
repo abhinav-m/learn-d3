@@ -9,3 +9,20 @@
     fill: black;
     font: 15px sans-serif;
 }
+
+.green {
+    fill: green;
+}
+
+.red {
+    fill: red
+}
+
+.dot {
+    transition: r 0.2s;
+}
+
+.dot:hover {
+    r: 8;
+    cursor: pointer;
+}

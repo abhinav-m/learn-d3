@@ -61,8 +61,9 @@ function makeChart(data) {
         .enter().append('circle')
 
     .attr('class', 'dot')
-        .attr('r', 2)
+        .attr('r', 5)
         .attr('cx', d => x(d.Seconds - minTime))
         .attr('cy', d => y(d.Place))
+        .attr('class', d => d.Doping === '' ? 'green dot' : 'red dot')
 
 }
