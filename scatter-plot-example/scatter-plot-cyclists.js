@@ -13,27 +13,46 @@ function makeChart(data) {
         bottom: 30
     }
 
+    const secondsRange = data[data.length - 1].Seconds - data[0].Seconds;
 
-
-    const secondsRange = data[data.length - 1] - data[0];
-
-    var svg = d3.select('.svg');
+    var svg = d3.select('.chart');
 
     const width = svg.attr('width') - margins.left - margins.right;
     const height = svg.attr('height') - margins.right - margins.bottom;
 
-    const barwidth = Math.ceil(width / data.length);
-
     var g = svg.append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+        .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
+
+    var x = d3.scaleLinear()
+        .domain([secondsRange + 5, 0])
+        .range([0, width]);
+
+    var y = d3.scaleLinear()
+        .domain([1, data.length + 1])
+        .range([0, height]);
+
+    //Making and rendering y axis.
+
+    var yAxis = d3.axisLeft(y);
+
+    //Rendering
+    g.append('g')
+        .attr('class', 'axis')
+        .call(yAxis)
+
+    .append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', 6)
+        .attr('dy', '0.71em')
+        .style('text-anchor', 'end')
+        .text('Cyclist rankings');
 
 
-}
+    //Making and rendering x axis.
 
+    g.append('g')
+        .attr('class', 'axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(d3.axisBottom(x));
 
-function makeTimeRange(start, end) {
-    let minutes = +end[0] - +start[0];
-    let seconds = +end[1] - +start[1];
-    minutes *= 60;
-    return minutes + seconds;
 }
