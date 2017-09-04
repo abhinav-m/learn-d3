@@ -131,6 +131,13 @@
         .attr('class', 'axis axis--x') // Applying class to it.
         .attr('transform', 'translate(0,' + height + ')') //Translating the axis to the bottom of the chart .
         .call(d3.axisBottom(x)) // using our scale made above to convert this g to an evenly spaced axis with alphabets.
+        .append('text')
+        .attr('text-anchor', 'end')
+        .attr('fill', 'black')
+        .text('Letters')
+        .attr('x', 0)
+        .attr('y', 9)
+        .attr('dy', '0.71em')
 
     g.append('g') //Making the y axis here, similar to above
         .attr('class', 'axis axis--y')
@@ -140,6 +147,7 @@
         .attr('y', 6)
         .attr('dy', '0.71em')
         .attr('text-anchor', 'end')
+        .attr('fill', 'black')
         .text('Frequency') //Add the text Frequency to the element
 
 

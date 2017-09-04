@@ -12,8 +12,9 @@ function makeChart(data) {
         left: 50,
         bottom: 30
     }
-
-    const secondsRange = data[data.length - 1].Seconds - data[0].Seconds;
+    const maxTime = data[data.length - 1].Seconds;
+    const minTime = data[0].Seconds;
+    const secondsRange = maxTime - minTime;
 
     var svg = d3.select('.chart');
 
@@ -54,5 +55,14 @@ function makeChart(data) {
         .attr('class', 'axis')
         .attr('transform', 'translate(0,' + height + ')')
         .call(d3.axisBottom(x));
+
+    g.selectAll('.dot')
+        .data(data)
+        .enter().append('circle')
+
+    .attr('class', 'dot')
+        .attr('r', 2)
+        .attr('cx', d => x(d.Seconds - minTime))
+        .attr('cy', d => y(d.Place))
 
 }
