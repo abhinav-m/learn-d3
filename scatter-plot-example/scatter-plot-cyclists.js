@@ -7,30 +7,36 @@ fetch(url)
 function makeChart(data) {
     //Left and bottom margins are more to adjust for the offsetting and axis descriptions.
     var margins = {
-        top: 20,
-        right: 20,
-        left: 50,
-        bottom: 30
+        top: Math.ceil(0.05 * window.innerHeight),
+        right: Math.ceil(0.10 * window.innerWidth),
+        left: Math.ceil(0.05 * window.innerWidth),
+        bottom: Math.ceil(0.10 * window.innerHeight)
     }
     const maxTime = data[data.length - 1].Seconds;
     const minTime = data[0].Seconds;
     const secondsRange = maxTime - minTime;
 
-    var svg = d3.select('.chart');
 
-    const width = svg.attr('width') - margins.left - margins.right;
-    const height = svg.attr('height') - margins.right - margins.bottom;
+
+    const chartWidth = window.innerWidth - margins.right - margins.left;
+    const chartHeight = window.innerHeight - margins.bottom - margins.top;
+
+    var svg = d3.select('.chart')
+        .attr('width', window.innerWidth)
+        .attr('height', window.innerHeight);
 
     var g = svg.append('g')
         .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
 
+    //Initialise scales.
+
     var x = d3.scaleLinear()
         .domain([secondsRange + 5, 0])
-        .range([0, width]);
+        .range([0, chartWidth]);
 
     var y = d3.scaleLinear()
         .domain([1, data.length + 1])
-        .range([0, height]);
+        .range([0, chartHeight]);
 
     //Making and rendering y axis.
 
@@ -53,17 +59,47 @@ function makeChart(data) {
 
     g.append('g')
         .attr('class', 'axis')
-        .attr('transform', 'translate(0,' + height + ')')
+        .attr('transform', 'translate(0,' + chartHeight + ')')
         .call(d3.axisBottom(x));
+
+    //Adding div to display info about currently selected
+    var infoCard = d3.select('body').append("div")
+        .attr("class", "info")
+        .style("opacity", 0);
+
 
     g.selectAll('.dot')
         .data(data)
         .enter().append('circle')
 
     .attr('class', 'dot')
-        .attr('r', 5)
+        .attr('r', 4)
         .attr('cx', d => x(d.Seconds - minTime))
         .attr('cy', d => y(d.Place))
         .attr('class', d => d.Doping === '' ? 'green dot' : 'red dot')
+        .on('mouseover', (d) => {
+            let name = d.Name;
+            let time = d.Time;
+            let pos = d.Place;
+            let doping = d.Doping;
+            let nation = d.Nationality;
 
+            infoCard.transition()
+                .duration(200)
+                .style('opacity', 0.8)
+                .style('background', doping === '' ? 'lightblue' : 'lightsalmon')
+                .style('color', doping === '' ? 'green' : 'red');
+
+
+            infoCard.html('<span >' + name + ' </span><br><span >  Position:&nbsp;' + pos + '&nbsp; Time:' + time + '</span> <br><span > Doping:&nbsp; ' + (doping === '' ? 'No Doping charges.' : doping) + '</span>')
+                .style("left", margins.left + 50 + 'px')
+                .style("top", margins.top + 50 + 'px');
+
+        })
+        .on("mouseout", function() {
+            infoCard.transition()
+                .duration(250)
+                .style("opacity", 0);
+
+        });
 }
