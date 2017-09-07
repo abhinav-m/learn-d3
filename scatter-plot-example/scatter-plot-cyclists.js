@@ -67,6 +67,33 @@ function makeChart(data) {
         .attr("class", "info")
         .style("opacity", 0);
 
+    g.append('text')
+        .attr('transform', 'translate(' + (chartWidth - margins.right) + ',' + (chartHeight / 2 + margins.bottom) + ')')
+        .attr('class', 'legend')
+        .text('Legend ');
+
+    g.append('text')
+        .attr('transform', 'translate(' + (chartWidth - margins.right + 12) + ',' + (chartHeight / 2 + margins.bottom + 29) + ')')
+        .attr('class', 'legend')
+        .text('Cyclists with doping allegations.');
+
+    g.append('text')
+        .attr('transform', 'translate(' + (chartWidth - margins.right + 12) + ',' + (chartHeight / 2 + margins.bottom + 54) + ')')
+        .text('Cyclists without doping allegations.');
+
+
+    g.append('circle')
+        .attr('class', 'red dot')
+        .attr('r', 4)
+        .attr('cx', chartWidth - margins.right + 4)
+        .attr('cy', chartHeight / 2 + margins.bottom + 25);
+
+
+    g.append('circle')
+        .attr('class', 'green dot')
+        .attr('r', 4)
+        .attr('cx', chartWidth - margins.right + 4)
+        .attr('cy', chartHeight / 2 + margins.bottom + 50);
 
     g.selectAll('.dot')
         .data(data)
