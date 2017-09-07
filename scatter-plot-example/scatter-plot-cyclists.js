@@ -78,6 +78,7 @@ function makeChart(data) {
         .text('Cyclists with doping allegations.');
 
     g.append('text')
+        .attr('class', 'legend')
         .attr('transform', 'translate(' + (chartWidth - margins.right + 12) + ',' + (chartHeight / 2 + margins.bottom + 54) + ')')
         .text('Cyclists without doping allegations.');
 
