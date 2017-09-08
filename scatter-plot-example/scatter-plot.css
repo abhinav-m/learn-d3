@@ -27,7 +27,12 @@ body {
 }
 
 .red {
-    fill: red
+    fill: maroon;
+}
+
+.legend-dot:hover {
+    r: 6;
+    cursor: pointer;
 }
 
 .dot:hover {

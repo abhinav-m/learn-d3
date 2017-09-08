@@ -84,14 +84,14 @@ function makeChart(data) {
 
 
     g.append('circle')
-        .attr('class', 'red dot')
+        .attr('class', 'red')
         .attr('r', 4)
         .attr('cx', chartWidth - margins.right + 4)
         .attr('cy', chartHeight / 2 + margins.bottom + 25);
 
 
     g.append('circle')
-        .attr('class', 'green dot')
+        .attr('class', 'green')
         .attr('r', 4)
         .attr('cx', chartWidth - margins.right + 4)
         .attr('cy', chartHeight / 2 + margins.bottom + 50);
