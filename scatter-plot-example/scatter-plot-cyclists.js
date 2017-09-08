@@ -18,12 +18,12 @@ function makeChart(data) {
 
 
 
-    const chartWidth = window.innerWidth - margins.right - margins.left;
-    const chartHeight = window.innerHeight - margins.bottom - margins.top;
+    const chartWidth = window.innerWidth - window.innerWidth / 8 - margins.right - margins.left;
+    const chartHeight = window.innerHeight - window.innerHeight / 8 - margins.bottom - margins.top;
 
     var svg = d3.select('.chart')
-        .attr('width', window.innerWidth)
-        .attr('height', window.innerHeight);
+        .attr('width', window.innerWidth - window.innerWidth / 8)
+        .attr('height', window.innerHeight - window.innerHeight / 8);
 
     var g = svg.append('g')
         .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
@@ -60,10 +60,18 @@ function makeChart(data) {
     g.append('g')
         .attr('class', 'axis')
         .attr('transform', 'translate(0,' + chartHeight + ')')
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x))
+
+    .append('text')
+        .attr('text-anchor', 'end')
+        .attr('fill', 'black')
+        .text('Time difference in seconds')
+        .attr('x', chartWidth)
+        .attr('y', -20)
+        .attr('dy', '0.71em');
 
     //Adding div to display info about currently selected
-    var infoCard = d3.select('body').append("div")
+    var infoCard = d3.select('.content').append("div")
         .attr("class", "info")
         .style("opacity", 0);
 
@@ -84,14 +92,14 @@ function makeChart(data) {
 
 
     g.append('circle')
-        .attr('class', 'red')
+        .attr('class', 'red legend-dot')
         .attr('r', 4)
         .attr('cx', chartWidth - margins.right + 4)
         .attr('cy', chartHeight / 2 + margins.bottom + 25);
 
 
     g.append('circle')
-        .attr('class', 'green')
+        .attr('class', 'green legend-dot')
         .attr('r', 4)
         .attr('cx', chartWidth - margins.right + 4)
         .attr('cy', chartHeight / 2 + margins.bottom + 50);
@@ -120,8 +128,8 @@ function makeChart(data) {
 
 
             infoCard.html('<span >' + name + ' </span><br><span >  Position:&nbsp;' + pos + '&nbsp; Time:' + time + '</span> <br><span > Doping:&nbsp; ' + (doping === '' ? 'No Doping charges.' : doping) + '</span>')
-                .style("left", margins.left + 50 + 'px')
-                .style("top", margins.top + 50 + 'px');
+                .style("left", margins.left + 200 + 'px')
+                .style("top", margins.top + 100 + 'px');
 
         })
         .on("mouseout", function() {
