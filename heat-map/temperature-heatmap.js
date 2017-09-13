@@ -54,7 +54,7 @@ function makeChart(data) {
 
     var x = d3.scaleTime()
         .domain([MIN_DATE, MAX_DATE])
-        .range(0, WIDTH);
+        .range([0, WIDTH]);
 
     var svg = d3.select('.chart')
         .attr('width', WIDTH + margins.left + margins.right)
