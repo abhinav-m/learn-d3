@@ -26,8 +26,8 @@ function makeChart(data) {
         left: 100
     }
 
-    const WIDTH = window.innerWidth / 2;
-    const HEIGHT = window.innerHeight / 2;
+    const WIDTH = window.innerWidth - window.innerWidth / 4;
+    const HEIGHT = window.innerHeight - window.innerHeight / 4;
 
     const BASE_TEMP = data.baseTemperature;
 
@@ -66,7 +66,7 @@ function makeChart(data) {
     g.append('g')
         .attr('class', 'axis')
         .attr('transform', 'translate(0,' + HEIGHT + ')')
-        .call(d3.axisBottom(x).ticks(10));
+        .call(d3.axisBottom(x).ticks(15));
 
     g.selectAll('.months')
         .data(MONTHS)
@@ -77,6 +77,17 @@ function makeChart(data) {
         .attr('y', (d, i) => i * CELL_HEIGHT)
         .style('text-anchor', 'end')
         .attr('transform', 'translate(-6,' + CELL_HEIGHT / 2 + ')');
+
+    var cells =
+        g.selectAll('.cell')
+        .data(DATA_MONTHWISE)
+        .enter().append('rect')
+        .attr('class', 'cell')
+        .attr('x', d => x(new Date(d.year, 0)))
+        .attr('y', d => (d.month - 1) * CELL_HEIGHT) // SVG origin (0,0) is at top left.
+        .attr('height', CELL_HEIGHT)
+        .attr('width', CELL_WIDTH)
+        .attr('fill', d => colorScale(d.variance + BASE_TEMP));
 
 
 
