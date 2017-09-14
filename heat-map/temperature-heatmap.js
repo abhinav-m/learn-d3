@@ -123,7 +123,7 @@ function makeChart(data) {
                 .duration(200)
                 .style('opacity', 0.8);
 
-            infoCard.html('<span>' + MONTHS[month] + '-' + year + '</span><br/><span>' + temp + '</span></br><span>' + vari + '</span>')
+            infoCard.html('<span>' + MONTHS[month - 1] + '-' + year + '</span><br/><span>' + temp + '</span></br><span>' + vari + '</span>')
                 .style("left", (d3.event.pageX + 5) + "px")
                 .style("top", (d3.event.pageY - 80) + "px");
 
