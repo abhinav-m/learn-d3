@@ -14,15 +14,15 @@ function makeChart(data) {
     ];
 
 
-    const colors = [
-        '#00004c',
+
+    const colors = ['#00004c',
         '#0000cc',
         '#7f7fff',
         '#ccccff',
         '#fbf2e2',
         '#f3d9a8',
         '#edc77d',
-        '#8d7342',
+        '#E4AB3C',
         '#ffb2b2',
         '#ff7f7f',
         '#ff3232'
@@ -73,6 +73,10 @@ function makeChart(data) {
         .range([0, WIDTH]);
 
 
+    var infoCard = d3.select(".content").append("div")
+        .attr("class", "info")
+        .style("opacity", 0);
+
     var svg = d3.select('.chart')
         .attr('width', WIDTH + margins.left + margins.right)
         .attr('height', HEIGHT + margins.top + margins.bottom);
@@ -107,6 +111,28 @@ function makeChart(data) {
         .attr('fill', d => colorScale(d.variance + BASE_TEMP));
 
 
+
+    cells.on('mouseover', (d) => {
+            let month = d.month,
+                year = d.year,
+                temp = (d.variance + BASE_TEMP).toFixed(2),
+                vari = d.variance;
+
+
+            infoCard.transition()
+                .duration(200)
+                .style('opacity', 0.8);
+
+            infoCard.html('<span>' + MONTHS[month] + '-' + year + '</span><br/><span>' + temp + '</span></br><span>' + vari + '</span>')
+                .style("left", (d3.event.pageX + 5) + "px")
+                .style("top", (d3.event.pageY - 80) + "px");
+
+        })
+        .on("mouseout", function() {
+            infoCard.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
 
 
 
