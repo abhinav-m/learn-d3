@@ -14,9 +14,18 @@ function makeChart(data) {
     ];
 
 
-    const colors = ["#0000FF", "#b2b2ff", "#66c2a5", "#abdda4",
-        "#7fff7f", "#ffffbf", "#fee08b", "#fdae61",
-        "#f46d43", "#d53e4f", "#b20000", "#330000"
+    const colors = [
+        '#00004c',
+        '#0000cc',
+        '#7f7fff',
+        '#ccccff',
+        '#fbf2e2',
+        '#f3d9a8',
+        '#edc77d',
+        '#8d7342',
+        '#ffb2b2',
+        '#ff7f7f',
+        '#ff3232'
     ];
 
     const margins = {
@@ -42,8 +51,15 @@ function makeChart(data) {
     const MIN_YEAR = DATA_MONTHWISE[0].year;
     const MAX_YEAR = DATA_MONTHWISE[DATA_MONTHWISE.length - 1].year;
 
-    const CELL_WIDTH = WIDTH / DATA_MONTHWISE.length;
     const CELL_HEIGHT = HEIGHT / MONTHS.length;
+
+    //Since X axis will be based on years, and years are repeated in the data, we have to 
+    //calculate individual cell width based off a unique array of years present in data.
+    var data_yearly = DATA_MONTHWISE.map(d => d.year);
+    data_yearly = data_yearly.filter((v, i) => data_yearly.indexOf(v) === i);
+    const CELL_WIDTH = WIDTH / data_yearly.length;
+
+
 
     var colorScale = d3.scaleQuantile()
         .domain([LOWEST_TEMP_VAR, HIGHEST_TEMP_VAR]) // Ranges of our temperature https://github.com/d3/d3-array#quantile
@@ -55,6 +71,7 @@ function makeChart(data) {
     var x = d3.scaleTime()
         .domain([MIN_DATE, MAX_DATE])
         .range([0, WIDTH]);
+
 
     var svg = d3.select('.chart')
         .attr('width', WIDTH + margins.left + margins.right)
