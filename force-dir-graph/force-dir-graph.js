@@ -8,13 +8,17 @@ fetch(url)
 function makeChart(data) {
 const nodeDist = 100;
 
-  var svg = d3.select('svg'),
-      width = +svg.attr('width'),
-      height = +svg.attr('height');
+  var chart = d3.select('.chart');
+  const width = parseInt(chart.style("width"));
+  const height = parseInt(chart.style("height"));
+
+  var svg = chart.append('svg')
+      .attr('width',width)
+      .attr('height',height);
 
   var simulation = d3.forceSimulation()
                      .force('link',d3.forceLink().distance(50))
-                     .force('charge',d3.forceManyBody().strength(-10))
+                     .force('charge',d3.forceManyBody().strength(-1))
                      .force('collide',d3.forceCollide().radius(4))
                      .force('center',d3.forceCenter(width/2,height/2));
 
@@ -25,7 +29,7 @@ const nodeDist = 100;
             .enter().append('line')
             .attr('stroke-width', 1);
 
-var node = svg.append('g')
+var node =    chart.select('.flagbox')
               .selectAll('.nodes')
               .data(data.nodes)
               .enter().append('img')
@@ -53,8 +57,8 @@ function ticked() {
         .attr("y2", function(d) { return d.target.y; });
 
     node
-        .attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
+        .style("left", function(d) { return (d.x-8) +'px' })
+        .style("top", function(d) { return (d.y-5) +'px' });
   }
 
   function dragstarted(d) {
