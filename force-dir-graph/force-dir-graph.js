@@ -13,7 +13,7 @@ const nodeDist = 100;
       height = +svg.attr('height');
 
   var simulation = d3.forceSimulation()
-                     .force('link',d => 100)
+                     .force('link',d3.forceLink())
                      .force('charge',d3.forceManyBody())
                      .force('center',d3.forceCenter(width/2,height/2));
 
@@ -41,9 +41,9 @@ simulation
   .nodes(data.nodes)
   .on('tick',ticked);
 
-//simulation
-//.force("link")
-//.links(data.links);
+simulation
+.force("link")
+.links(data.links);
 
 function ticked() {
   link
