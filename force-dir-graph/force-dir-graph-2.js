@@ -12,11 +12,13 @@ const nodeDist = 100;
       width = +svg.attr('width'),
       height = +svg.attr('height');
 
-  var simulation = d3.forceSimulation()
-                     .force('link',d3.forceLink().distance(50))
-                     .force('charge',d3.forceManyBody().strength(-10))
-                     .force('collide',d3.forceCollide().radius(4))
-                     .force('center',d3.forceCenter(width/2,height/2));
+
+    	var force = d3.force()
+    		.size([width, height])
+    		.nodes(data.nodes)
+    		.links(data.links)
+    		.linkDistance(linkDistance)
+    		.charge(forceCharge);
 
  var link = svg.append('g')
             .attr('class','links')
@@ -26,10 +28,12 @@ const nodeDist = 100;
             .attr('stroke-width', 1);
 
 var node = svg.append('g')
-              .selectAll('.nodes')
+              .attr('class','nodes')
+              .selectAll('circle')
               .data(data.nodes)
-              .enter().append('img')
-          		.attr('class', d => 'flag flag-' + d.code)
+              .enter().append('circle')
+              .attr('r',5)
+              .attr('fill','blue')
               .call(d3.drag()
          .on("start", dragstarted)
          .on("drag", dragged)
@@ -43,7 +47,6 @@ simulation
 simulation
 .force("link")
 .links(data.links);
-
 
 function ticked() {
   link
