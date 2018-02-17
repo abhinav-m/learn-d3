@@ -1,0 +1,72 @@
+body {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+background:black;
+font-family: 'Roboto Mono', monospace;
+}
+
+.links line {
+  stroke: black;
+  stroke-opacity: 0.6;
+}
+
+.chart {
+    height: 800px;
+    width: 1000px;
+    margin: auto;
+    background-color: slategray;
+    border-radius: 25px;
+}
+.flagbox {
+  position:absolute;
+}
+
+.flag {
+  position:absolute;
+  border: blue 1px solid;
+  border-radius: 20%;
+}
+
+.info {
+  position:absolute;
+  opacity:0;
+  color:white;
+  font-size:0.7em;
+  border-radius:5px;
+  padding:10px;
+  z-index:1;
+  background-color:black;
+  border-radius:5px;
+}
+h1 {
+  color:white
+}
+
+.fa-heart {
+    color: red;
+}
+
+.signature {
+    font-family: 'Rajdhani', sans-serif;
+    text-align:center;
+}
+
+
+a {
+   color:white;
+    text-decoration: none;
+}
+
+a:hover{
+  cursor:pointer;
+}
+
+a:visited {
+    color: pink;
+}
+
+a:visited:hover {
+    color: blue;
+}
