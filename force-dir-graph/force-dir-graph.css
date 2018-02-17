@@ -13,12 +13,13 @@ font-family: 'Roboto Mono', monospace;
 }
 
 .chart {
-    height: 800px;
+    height: 700px;
     width: 1000px;
     margin: auto;
     background-color: slategray;
     border-radius: 25px;
 }
+
 .flagbox {
   position:absolute;
 }

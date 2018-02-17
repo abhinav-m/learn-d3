@@ -25,7 +25,7 @@ function makeChart(data) {
                      .force('y',d3.forceY(1)); //Force towards y axis [0,1]
 
 
-var info = d3.select('.info');
+
 
  var link = svg.append('g')
             .attr('class','links')
@@ -34,12 +34,14 @@ var info = d3.select('.info');
             .enter().append('line')
             .attr('stroke-width', 1);
 
+var info = d3.select('.info');
+
 var node =    chart.select('.flagbox')
               .selectAll('.nodes')
               .data(data.nodes)
               .enter().append('img')
           		.attr('class', d => 'flag flag-' + d.code)
-              .call(d3.drag()
+          .call(d3.drag()
          .on("start", dragstarted)
          .on("drag", dragged)
          .on("end", dragended))
