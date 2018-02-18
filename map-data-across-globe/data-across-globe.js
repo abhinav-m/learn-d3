@@ -8,20 +8,26 @@ fetch(mDataUrl)
 
 function chart(data) {
 
-  var width = '100%',
-      height = '100%';
+var width = window.innerWidth;
+var height = window.innerHeight;
+
+
 
   var projection = d3.geoMercator()
-                      .scale(100)
-                     .translate([600,300]);
+                      .scale(120)
+                     .translate([width/2,height/2]); //Translate projection to center of svg.
+
+  var zoom = d3.zoom()
+                .on('zoom',zoomed);
 
   var path = d3.geoPath()
                .projection(projection);
 
   var svg = d3.select('#graph')
               .append('svg')
-              .attr('width',1000)
-              .attr('height',800);
+              .attr('width',width)
+              .attr('height',height)
+              .call(zoom);
 
       svg.append('rect')
          .attr('width',width)
@@ -40,5 +46,10 @@ function chart(data) {
     .attr('stroke', '#266D98')
     .attr('d', path)
 
-})
+});
+
+function zoomed() {
+var transform = d3.zoomTransform(this);
+this.setAttribute('transform',transform);
+}
 }
