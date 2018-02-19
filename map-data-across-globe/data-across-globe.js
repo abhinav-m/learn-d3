@@ -8,17 +8,17 @@ fetch(mDataUrl)
 
 function chart(data) {
 
-var width = window.innerWidth;
-var height = window.innerHeight;
+var width = window.innerWidth - window.innerWidth/4;
+var height =  window.innerHeight - window.innerHeight/4;
 
 
 
   var projection = d3.geoMercator()
-                      .scale(300)
+                      .scale(200)
                      .translate([width/2,height/2]); //Translate projection to center of svg.
 
   var zoom = d3.zoom()
-                .scaleExtent([1,8])
+                .scaleExtent([1,5])
                 .on('zoom',zoomed);
 
   var path = d3.geoPath()
@@ -33,6 +33,7 @@ var height = window.innerHeight;
 var meteorites,radiusScale,colorScale,opacityScale;
 
 
+
       svg.append('rect')
          .attr('width',width)
          .attr('height',height)
@@ -40,6 +41,8 @@ var meteorites,radiusScale,colorScale,opacityScale;
          .on("click", reset);
 
   var map = svg.append('g');
+  var info = d3.select('.info');
+
 
   svg.call(zoom);
 
@@ -62,8 +65,8 @@ var meteorites,radiusScale,colorScale,opacityScale;
    data.features.sort((a,b) => b.properties.mass - a.properties.mass);
 
 
-    var max = data.features.reduce( (a,b) => parseInt(a.properties.mass)  > parseInt(b.properties.mass) ? a : b).properties.mass;
-    var min = data.features.reduce( (a,b) => parseInt(a.properties.mass)  < parseInt(b.properties.mass) ? a : b).properties.mass;
+    var max = data.features[0].properties.mass;
+    var min = data.features[data.features.length-1].properties.mass;
 
     radiusScale = d3.scalePow()
                     .domain([min,max])
@@ -74,15 +77,11 @@ var meteorites,radiusScale,colorScale,opacityScale;
    colorScale = d3.scaleSequential(d3.interpolateRainbow)
                         .domain([2, 60]);
 
-  opacityScale = d3.scaleLinear()
+   opacityScale = d3.scaleLinear()
                    .domain([2,60])
                    .range([1,0.5]);
 
 
-   console.log('rmin'+radiusScale(min));
-   console.log('rmax'+radiusScale(max));
-    console.log('max '+max);
-    console.log('min '+min);
 
    meteorites =   svg.selectAll('.meteor')
     .append('g')
@@ -98,7 +97,27 @@ var meteorites,radiusScale,colorScale,opacityScale;
 		.attr("cy", function(d) {
 				return projection([d.properties.reclong,d.properties.reclat])[1];})
     .attr('fill', d => colorScale(Math.floor(radiusScale(d.properties.mass))))
-    .attr('opacity',d => opacityScale(Math.floor(radiusScale(d.properties.mass)))  )
+    .attr('opacity',d => opacityScale(Math.floor(radiusScale(d.properties.mass))))
+    .on("mouseover", function(d){
+        d3.select(this).attr('d', path).style('fill', 'black');
+       info.transition()
+         .duration(100)
+         .style("opacity", 0.8);
+         info.html('<span>Name: '+d.properties.name+'</span><br><span>Class: '+d.properties.recclass+'</span><br><span>Mass: '+Number(d.properties.mass).toLocaleString()+'</span><br><span>Date: '+(new Date(d.properties.year)).getFullYear()+'</span>');
+         info.style("left",  (d3.event.pageX + 20) + "px")
+             .style("top", (d3.event.pageY - 50)+'px');
+
+     })
+     .on("mouseout", function(d){
+           d3.select(this).attr('d', path).style('fill', colorScale(Math.floor(radiusScale(d.properties.mass))));
+       info.transition()
+         .duration(100)
+         .style("opacity", 0);
+       info
+         .style("left", "-999px")
+         .style("top", "-999px");
+     });
+
 
 
 

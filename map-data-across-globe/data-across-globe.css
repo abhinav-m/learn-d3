@@ -2,7 +2,56 @@ html,body {
 margin:0;
 }
 
+body {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+background:black;
+font-family: 'Roboto Mono', monospace;
+}
 
-.meteor {
+h1 {
+  color:white;
+}
+
+
+
+.info {
+ font-family: 'Dosis', sans-serif;
   position:absolute;
+  opacity:0;
+  color:white;
+  font-size:0.9em;
+  border-radius:5px;
+  padding:10px;
+  background-color:black;
+  border-radius:5px;
+}
+
+fa-heart {
+    color: red;
+}
+
+.signature {
+    font-family: 'Rajdhani', sans-serif;
+    text-align:center;
+}
+
+
+a {
+   color:white;
+    text-decoration: none;
+}
+
+a:hover{
+  cursor:pointer;
+}
+
+a:visited {
+    color: pink;
+}
+
+a:visited:hover {
+    color: blue;
 }
